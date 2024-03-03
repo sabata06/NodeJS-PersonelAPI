@@ -41,6 +41,20 @@ app.use(require("cookie-session")({ secret: process.env.SECRET_KEY }));
 //res.getModelList()
 app.use(require("./src/middlewares/findSearchSortPage"));
 
+//login/logout middlewares
+app.use(async (req, res, next) => {
+  const Personnel = require("./src/models/personnel.model");
+
+  req.isLogin = false;
+
+  if (req.session?.id) {
+    const user = await Personnel.findOne({ _id: req.session.id });
+    req.isLogin = user.password == req.session.password;
+  }
+
+  next();
+});
+
 /**----------------------------------------------------------------- */
 
 //Routes:
@@ -49,6 +63,8 @@ app.all("/", (req, res) => {
   res.send({
     error: false,
     message: "Welcome to PERSONEL API",
+    session: req.session,
+    isLogin: req.isLogin,
   });
 });
 
