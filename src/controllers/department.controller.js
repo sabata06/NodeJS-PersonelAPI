@@ -15,6 +15,7 @@ module.exports = {
       data,
     });
   },
+
   create: async (req, res) => {
     const data = await Department.create(req.body);
     res.status(201).send({
@@ -44,6 +45,29 @@ module.exports = {
 
     res.status(isDeleted ? 204 : 404).send({
       error: isDeleted,
+      data,
+    });
+  },
+  personnels: async (req, res) => {
+    const Personnel = require("../models/personnel.model");
+
+    const data = await res.getModelList(
+      Personnel,
+      {
+        departmentId: req.params.id,
+      },
+      "departmentId"
+    );
+
+    res.status(200).send({
+      error: false,
+      detail: await res.getModelListDetails(
+        Personnel,
+        {
+          departmentId: req.params.id,
+        },
+        "departmentId"
+      ),
       data,
     });
   },
