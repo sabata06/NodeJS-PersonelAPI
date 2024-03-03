@@ -44,6 +44,7 @@ app.use(require("./src/middlewares/findSearchSortPage"));
 /**----------------------------------------------------------------- */
 
 //Routes:
+//Home Path
 app.all("/", (req, res) => {
   res.send({
     error: false,
@@ -51,7 +52,9 @@ app.all("/", (req, res) => {
   });
 });
 
-//Home Path
+//departmentS
+
+app.use("/departments", require("./src/routes/department.router"));
 /**----------------------------------------------------------------- */
 /**----------------------------------------------------------------- */
 /**----------------------------------------------------------------- */
