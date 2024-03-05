@@ -41,21 +41,27 @@ app.use(require("cookie-session")({ secret: process.env.SECRET_KEY }));
 //res.getModelList()
 app.use(require("./src/middlewares/findSearchSortPage"));
 
-//login/logout middlewares
+//!login/logout middlewares
+// app.use(async (req, res, next) => {
+//   const Personnel = require("./src/models/personnel.model");
+
+//   req.isLogin = false;
+
+//   if (req.session?.id) {
+//     const user = await Personnel.findOne({ _id: req.session.id });
+//     req.isLogin = user.password == req.session.password;
+//   }
+
+//   next();
+// });
+//**----------------------------------------------------------------- */
 app.use(async (req, res, next) => {
-  const Personnel = require("./src/models/personnel.model");
-
-  req.isLogin = false;
-
-  if (req.session?.id) {
-    const user = await Personnel.findOne({ _id: req.session.id });
-    req.isLogin = user.password == req.session.password;
-  }
-
-  next();
-});
+  
+}
 
 /**----------------------------------------------------------------- */
+
+
 
 //Routes:
 //Home Path
@@ -68,6 +74,8 @@ app.all("/", (req, res) => {
   });
 });
 
+//Auth
+app.use("/auth", require("./src/routes/auth.router"));
 //departmentS
 app.use("/departments", require("./src/routes/department.router"));
 
@@ -87,4 +95,4 @@ app.listen(PORT, () => console.log("http://127.0.0.1:" + PORT));
 
 /* ------------------------------------------------------- */
 // Syncronization (must be in commentLine):
-// require('./src/helpers/sync')()
+// require("./src/helpers/sync")();

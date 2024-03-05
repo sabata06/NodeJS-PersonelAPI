@@ -35,8 +35,10 @@ module.exports = {
           });
           res.send({
             error: false,
-            accesToken,
-            refreshToken,
+            token: {
+              access: accesToken,
+              refresh: refreshToken,
+            },
           });
         } else {
           res.errorStatusCode = 401;
