@@ -3,6 +3,7 @@
     EXPRESS - Personnel API
 ------------------------------------------------------- */
 const Personnel = require("../models/personnel.model");
+const jwt = require("jsonwebtoken");
 
 module.exports = {
   login: async (req, res) => {
@@ -22,10 +23,16 @@ module.exports = {
             isAdmin: user.isAdmin,
             isLead: user.isLead,
           };
+          const accesToken = jwt.sign(accesData, process.env.SECRET_KEY, {
+            expiresIn: "30m",
+          });
           const refreshData = {
             username: user.username,
             password: user.password,
           };
+          const refreshToken = jwt.sign(refreshData, process.env.REFRESH_KEY, {
+            expiresIn: "3d",
+          });
         } else {
           res.errorStatusCode = 401;
           throw new Error("This account is not active.");
@@ -36,7 +43,7 @@ module.exports = {
       }
     } else {
       res.errorStatusCode = 401;
-      throw new Error("Please entery username and password.");
+      throw new Error("Please enter username and password.");
     }
   },
   refresh: async (req, res) => {},
