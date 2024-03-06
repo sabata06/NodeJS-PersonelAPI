@@ -57,7 +57,7 @@ app.use(require("./src/middlewares/findSearchSortPage"));
 //**----------------------------------------------------------------- */
 app.use(async (req, res, next) => {
   
-}
+},
 
 /**----------------------------------------------------------------- */
 
@@ -72,7 +72,7 @@ app.all("/", (req, res) => {
     session: req.session,
     isLogin: req.isLogin,
   });
-});
+})
 
 //Auth
 app.use("/auth", require("./src/routes/auth.router"));
