@@ -55,26 +55,28 @@ app.use(require("./src/middlewares/findSearchSortPage"));
 //   next();
 // });
 //**----------------------------------------------------------------- */
-const jwt = require("jsonwebtoken");
-app.use((req, res, next) => {
-  const auth = req.headers?.authorization || null; //get authorization
-  const accessToken = auth ? auth.split(" ")[1] : null; //get jwt token
-  req.isLogin = false;
+//! moved to middlewares as authenticated.js
+// const jwt = require("jsonwebtoken");
+// app.use((req, res, next) => {
+//   const auth = req.headers?.authorization || null; //get authorization
+//   const accessToken = auth ? auth.split(" ")[1] : null; //get jwt token
+//   req.isLogin = false;
 
-  jwt.verify(accessToken, process.env.SECRET_KEY, function (err, user) {
-    if (err) {
-      req.user = null;
-      console.log("JWT Login: NO");
-    } else {
-      req.isLogin = true;
-      req.user = user.isActive ? user : null;
-      console.log("JWT Login: YES");
-    }
-  });
+//   jwt.verify(accessToken, process.env.ACCESS_KEY, function (err, user) {
+//     if (err) {
+//       req.user = null;
+//       console.log("JWT Login: NO");
+//     } else {
+//       req.isLogin = true;
+//       req.user = user;
+//       // req.user = user.isActive ? user : null;
+//       console.log("JWT Login: YES");
+//     }
+//   });
 
-  next();
-});
-
+//   next();
+// });
+app.use(require("./src/middlewares/authenticated"));
 /**----------------------------------------------------------------- */
 
 /* ------------------------------------------------------- */
@@ -108,4 +110,4 @@ app.listen(PORT, () => console.log("http://127.0.0.1:" + PORT));
 
 /* ------------------------------------------------------- */
 // Syncronization (must be in commentLine):
-// require('./src/helpers/sync')()
+// require("./src/helpers/sync")();
