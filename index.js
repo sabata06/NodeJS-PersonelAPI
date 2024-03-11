@@ -55,37 +55,50 @@ app.use(require("./src/middlewares/findSearchSortPage"));
 //   next();
 // });
 //**----------------------------------------------------------------- */
-app.use(async (req, res, next) => {
-  
-},
+const jwt = require("jsonwebtoken");
+app.use((req, res, next) => {
+  const auth = req.headers?.authorization || null; //get authorization
+  const accessToken = auth ? auth.split(" ")[1] : null; //get jwt token
+  req.isLogin = false;
+
+  jwt.verify(accessToken, process.env.SECRET_KEY, function (err, user) {
+    if (err) {
+      req.user = null;
+      console.log("JWT Login: NO");
+    } else {
+      req.isLogin = true;
+      req.user = user.isActive ? user : null;
+      console.log("JWT Login: YES");
+    }
+  });
+
+  next();
+});
 
 /**----------------------------------------------------------------- */
 
+/* ------------------------------------------------------- */
+// Routes:
 
-
-//Routes:
-//Home Path
+// HomePath:
 app.all("/", (req, res) => {
   res.send({
     error: false,
-    message: "Welcome to PERSONEL API",
-    session: req.session,
+    message: "Welcome to PERSONNEL API",
+    // session: req.session,
     isLogin: req.isLogin,
+    user: req.user,
   });
-})
+});
 
-//Auth
+// /auth
 app.use("/auth", require("./src/routes/auth.router"));
-//departmentS
+// /departments
 app.use("/departments", require("./src/routes/department.router"));
-
-//personnels
+// /personnels
 app.use("/personnels", require("./src/routes/personnel.router"));
 
-/**----------------------------------------------------------------- */
-/**----------------------------------------------------------------- */
-/**----------------------------------------------------------------- */
-/**----------------------------------------------------------------- */
+/* ------------------------------------------------------- */
 
 // errorHandler:
 app.use(require("./src/middlewares/errorHandler"));
@@ -95,4 +108,4 @@ app.listen(PORT, () => console.log("http://127.0.0.1:" + PORT));
 
 /* ------------------------------------------------------- */
 // Syncronization (must be in commentLine):
-// require("./src/helpers/sync")();
+// require('./src/helpers/sync')()
