@@ -7,77 +7,82 @@
     $ npm i cookie-session
     $ npm i jsonwebtoken
 */
-
 const express = require("express");
 const app = express();
 
 /* ------------------------------------------------------- */
+// Required Modules:
 
-// envariables to process.env
-
+// envVariables to process.env:
 require("dotenv").config();
 const PORT = process.env?.PORT || 8000;
 
-//asyncErrors to error handler
+// asyncErrors to errorHandler:
 require("express-async-errors");
+
 /* ------------------------------------------------------- */
+// Configrations:
 
-//Configurations:
-
-//connect to DB
+// Connect to DB:
 const { dbConnection } = require("./src/configs/dbConnection");
 dbConnection();
 
-/**----------------------------------------------------------------- */
+/* ------------------------------------------------------- */
+// Middlewares:
 
-//Middlewares:
-
-// Accept JSON
+// Accept JSON:
 app.use(express.json());
 
-//session Cookies:
+// SessionsCookies:
 app.use(require("cookie-session")({ secret: process.env.SECRET_KEY }));
 
-//res.getModelList()
+// res.getModelList():
 app.use(require("./src/middlewares/findSearchSortPage"));
 
-//!login/logout middlewares
+// Cookie: Login/Logout Control Middleware
 // app.use(async (req, res, next) => {
-//   const Personnel = require("./src/models/personnel.model");
 
-//   req.isLogin = false;
+//     const Personnel = require('./src/models/personnel.model')
 
-//   if (req.session?.id) {
-//     const user = await Personnel.findOne({ _id: req.session.id });
-//     req.isLogin = user.password == req.session.password;
-//   }
+//     req.isLogin = false
 
-//   next();
-// });
-//**----------------------------------------------------------------- */
-//! moved to middlewares as authenticated.js
-// const jwt = require("jsonwebtoken");
-// app.use((req, res, next) => {
-//   const auth = req.headers?.authorization || null; //get authorization
-//   const accessToken = auth ? auth.split(" ")[1] : null; //get jwt token
-//   req.isLogin = false;
+//     if (req.session?.id) {
 
-//   jwt.verify(accessToken, process.env.ACCESS_KEY, function (err, user) {
-//     if (err) {
-//       req.user = null;
-//       console.log("JWT Login: NO");
-//     } else {
-//       req.isLogin = true;
-//       req.user = user;
-//       // req.user = user.isActive ? user : null;
-//       console.log("JWT Login: YES");
+//         const user = await Personnel.findOne({ _id: req.session.id })
+
+//         // if (user && user.password == req.session.password) {
+//         //     req.isLogin = true
+//         // }
+//         req.isLogin = user && user.password == req.session.password
 //     }
-//   });
+//     console.log('isLogin: ', req.isLogin)
 
-//   next();
-// });
-app.use(require("./src/middlewares/authenticated"));
-/**----------------------------------------------------------------- */
+//     next()
+// })
+
+//* Moved -> middlewares/authentication.js
+// const jwt = require('jsonwebtoken')
+// app.use((req, res, next) => {
+
+//     const auth = req.headers?.authorization || null // get Authorization
+//     const accessToken = auth ? auth.split(' ')[1] : null // get JWT
+
+//     req.isLogin = false
+
+//     jwt.verify(accessToken, process.env.ACCESS_KEY, function(err, user) {
+//         if (err) {
+//             req.user = null
+//             console.log('JWT Login: NO')
+//         } else {
+//             req.isLogin = true
+//             req.user = user
+//             // req.user = user.isActive ? user : null
+//             console.log('JWT Login: YES')
+//         }
+//     })
+//     next()
+// })
+app.use(require("./src/middlewares/authentication"));
 
 /* ------------------------------------------------------- */
 // Routes:
@@ -110,4 +115,4 @@ app.listen(PORT, () => console.log("http://127.0.0.1:" + PORT));
 
 /* ------------------------------------------------------- */
 // Syncronization (must be in commentLine):
-// require("./src/helpers/sync")();
+// require('./src/helpers/sync')()
