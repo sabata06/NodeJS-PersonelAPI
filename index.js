@@ -82,7 +82,7 @@ app.use(require("./src/middlewares/findSearchSortPage"));
 //     })
 //     next()
 // })
-app.use(require("./src/middlewares/authentication"));
+app.use(require("./src/middlewares/authenticated"));
 
 /* ------------------------------------------------------- */
 // Routes:
